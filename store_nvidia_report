@@ -19,7 +19,7 @@ if [[ -f "$latest_file" ]]; then
 
     # Check if target file exists, if it does, append with a version
     version=1
-    while [[ -f "$target_file" ]]; do
+    while [[ -f "$target_file" || -f "${target_file%.gz}" ]]; do
         target_file=~/nvidia_bug_reports/nvidia-bug-report-${ticket_number}-v${version}.log.gz
         version=$((version+1))
     done

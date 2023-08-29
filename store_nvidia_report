@@ -30,7 +30,7 @@ if [[ -f "$latest_file" ]]; then
     # Unzip the file
     gunzip "$target_file"
 
-    echo "File moved, renamed and uznipped successfully! $(basename "$target_file%.gz") can be found in ~/nvidia-bug-reports"
+    echo "File moved, renamed and uznipped successfully! $(basename "${target_file%.gz}") can be found in ~/nvidia-bug-reports"
 else
     echo "Error: nvidia-bug-report.log.gz not found in the ~/Downloads directory."
 fi

@@ -28,7 +28,7 @@ if [[ ! -d "$TARGET_DIR" ]]; then
     mkdir "$TARGET_DIR"
 fi
 
-# Identify latest nvidia-bug-report.log.gz file in the ~/Downloads directory
+# Identify latest nvidia-bug-report.log.gz file in the source directory
 latest_file=$(ls "$SOURCE_DIR"/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
 
 if [[ -f "$latest_file" ]]; then

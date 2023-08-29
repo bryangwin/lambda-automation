@@ -27,6 +27,9 @@ if [[ -f "$latest_file" ]]; then
     # Move and rename the file
     mv "$latest_file" "$target_file"
 
+    # Unzip the file
+    gunzip "$target_file"
+
     echo "File moved and renamed to $(basename "$target_file") successfully!"
 else
     echo "Error: nvidia-bug-report.log.gz not found in the ~/Downloads directory."

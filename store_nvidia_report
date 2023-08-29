@@ -23,7 +23,7 @@ while getopts "o" opt; do
     esac
 done
 
-# Check if the directory 'nvidia_bug_reports' exists in the user's home directory
+# Check if the target directory exists, if not, create it
 if [[ ! -d "$TARGET_DIR" ]]; then
     mkdir "$TARGET_DIR"
 fi

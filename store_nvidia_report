@@ -6,7 +6,7 @@ if [[ ! -d ~/nvidia_bug_reports ]]; then
     mkdir ~/nvidia_bug_reports
 fi
 
-# Identify the file with the highest number (or the one without a number)
+# Identify the latest nvidia report log in Downloads
 latest_file=$(ls ~/Downloads/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
 
 if [[ -f "$latest_file" ]]; then

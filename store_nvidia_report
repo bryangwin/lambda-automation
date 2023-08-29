@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Check if the directory 'nvidia_bug_reports' exists in the user's home directory
+if [[ ! -d ~/nvidia_bug_reports ]]; then
+    # If the directory doesn't exist, create it
+    mkdir ~/nvidia_bug_reports
+fi
+
+# Identify the file with the highest number (or the one without a number)
+latest_file=$(ls ~/Downloads/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
+
+if [[ -f "$latest_file" ]]; then
+    # Prompt the user for the ticket number
+    echo -n "Enter the ticket number: "
+    read ticket_number
+    
+    # Target file path
+    target_file=~/nvidia_bug_reports/nvidia-bug-report-${ticket_number}.log.gz
+
+    # Check if target file exists, if it does, append with a version
+    version=1
+    while [[ -f "$target_file" ]]; do
+        target_file=~/nvidia_bug_reports/nvidia-bug-report-${ticket_number}-v${version}.log.gz
+        version=$((version+1))
+    done
+    
+    # Move and rename the file
+    mv "$latest_file" "$target_file"
+
+    echo "File moved and renamed to $(basename "$target_file") successfully!"
+else
+    echo "Error: nvidia-bug-report.log.gz not found in the ~/Downloads directory."
+fi

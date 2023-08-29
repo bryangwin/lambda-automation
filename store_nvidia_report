@@ -1,12 +1,32 @@
 #!/bin/bash
 
+# Flag to determine if we should open the file with less
+OPEN_WITH_LESS=false
+
+# Parse command line options using getopts
+OPTERR=0
+INVALID_OPT="$1"
+
+while getopts "o" opt; do
+    case $opt in
+        o)
+            OPEN_WITH_LESS=true
+            ;;
+        \?)
+            echo "Invalid option: $INVALID_OPT use -o if you'd like to open the file" >&2
+            exit 1
+            ;;
+    esac
+done
+
+
 # Check if the directory 'nvidia_bug_reports' exists in the user's home directory
 if [[ ! -d ~/nvidia_bug_reports ]]; then
     # If the directory doesn't exist, create it
     mkdir ~/nvidia_bug_reports
 fi
 
-# Identify the latest nvidia report log in Downloads
+# Identify the file with the highest number (or the one without a number)
 latest_file=$(ls ~/Downloads/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
 
 if [[ -f "$latest_file" ]]; then
@@ -24,13 +44,20 @@ if [[ -f "$latest_file" ]]; then
         version=$((version+1))
     done
     
-    # Move and rename the file
+    # Move the file
     mv "$latest_file" "$target_file"
 
-    # Unzip the file
+    # Unzip the file using gunzip
     gunzip "$target_file"
 
-    echo "File moved, renamed and uznipped successfully! $(basename "${target_file%.gz}") can be found in ~/nvidia-bug-reports"
+    # Determine if we should open the file with less
+    if $OPEN_WITH_LESS; then
+        less "${target_file%.gz}"
+    else
+        # Display success message
+        echo "File moved, renamed, and unzipped to $(basename "${target_file%.gz}") successfully!"
+    fi
+
 else
     echo "Error: nvidia-bug-report.log.gz not found in the ~/Downloads directory."
 fi

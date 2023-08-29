@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#Change your source and target directories here:
+SOURCE_DIR=~/Downloads
+TARGET_DIR=~/nvidia_bug_reports
+
 # Flag to determine if we should open the file with less
 OPEN_WITH_LESS=false
 
@@ -19,44 +23,39 @@ while getopts "o" opt; do
     esac
 done
 
-
 # Check if the directory 'nvidia_bug_reports' exists in the user's home directory
-if [[ ! -d ~/nvidia_bug_reports ]]; then
-    # If the directory doesn't exist, create it
-    mkdir ~/nvidia_bug_reports
+if [[ ! -d "$TARGET_DIR" ]]; then
+    mkdir "$TARGET_DIR"
 fi
 
 # Identify latest nvidia-bug-report.log.gz file in the ~/Downloads directory
-latest_file=$(ls ~/Downloads/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
+latest_file=$(ls "$SOURCE_DIR"/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
 
 if [[ -f "$latest_file" ]]; then
     # Prompt the user for the ticket number
     echo -n "Enter the ticket number: "
     read ticket_number
     
-    # Target file path
-    target_file=~/nvidia_bug_reports/nvidia-bug-report-${ticket_number}.log.gz
+    target_file="$TARGET_DIR"/nvidia-bug-report-${ticket_number}.log.gz
 
     # Check if target file exists, if it does, append with a version
     version=1
     while [[ -f "$target_file" || -f "${target_file%.gz}" ]]; do
-        target_file=~/nvidia_bug_reports/nvidia-bug-report-${ticket_number}-v${version}.log.gz
+        target_file="$TARGET_DIR"/nvidia-bug-report-${ticket_number}-v${version}.log.gz
         version=$((version+1))
     done
     
-    # Move the file
     mv "$latest_file" "$target_file"
 
-    # Unzip the file using gunzip
     gunzip "$target_file"
 
     # Apply -o flag if user specified
     if $OPEN_WITH_LESS; then
         less "${target_file%.gz}"
     else
-        echo "File moved, renamed, and unzipped to $(basename "${target_file%.gz}") successfully!"
+        echo "Success! $(basename "${target_file%.gz}") created in $TARGET_DIR"
     fi
 
 else
-    echo "Error: nvidia-bug-report.log.gz not found in the ~/Downloads directory."
+    echo "Error: nvidia-bug-report.log.gz not found in $SOURCE_DIR"
 fi

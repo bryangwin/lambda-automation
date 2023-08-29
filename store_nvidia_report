@@ -26,7 +26,7 @@ if [[ ! -d ~/nvidia_bug_reports ]]; then
     mkdir ~/nvidia_bug_reports
 fi
 
-# Identify the file with the highest number (or the one without a number)
+# Identify latest nvidia-bug-report.log.gz file in the ~/Downloads directory
 latest_file=$(ls ~/Downloads/nvidia-bug-report*.log.gz 2> /dev/null | sort -V | tail -n 1)
 
 if [[ -f "$latest_file" ]]; then
@@ -50,11 +50,10 @@ if [[ -f "$latest_file" ]]; then
     # Unzip the file using gunzip
     gunzip "$target_file"
 
-    # Determine if we should open the file with less
+    # Apply -o flag if user specified
     if $OPEN_WITH_LESS; then
         less "${target_file%.gz}"
     else
-        # Display success message
         echo "File moved, renamed, and unzipped to $(basename "${target_file%.gz}") successfully!"
     fi
 

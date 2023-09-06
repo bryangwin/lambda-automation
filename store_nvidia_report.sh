@@ -12,7 +12,7 @@
 SOURCE_DIR=~/Downloads
 TARGET_DIR=~/nvidia_bug_reports
 
-# Flag to determine if it should open the file with less
+# Flag to determine if it should open the file with the check-nvidia-bug-report.sh script
 OPEN_REPORT=false
 
 # Function to open the bug report. This assumes you have check-nvidia-bug-report.sh in your path
@@ -27,18 +27,14 @@ open_bug_report() {
 }
 
 
-# Parse command line options using getopts
-OPTERR=0
-INVALID_OPT="$1"
-
 while getopts "o" opt; do
     case $opt in
         o)
             OPEN_REPORT=true
             ;;
         \?)
-            echo "Invalid option: $INVALID_OPT use -o if you'd like to open the file" >&2
-            exit 1
+            echo "Use -o if you'd like to open the file with the parsing script" >&2
+            exit 
             ;;
     esac
 done

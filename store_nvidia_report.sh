@@ -53,9 +53,18 @@ latest_file=$(ls "$SOURCE_DIR"/nvidia-bug-report*.log.gz 2> /dev/null | sort -V 
 
 if [[ -f "$latest_file" ]]; then
     # Prompt the user for the ticket number
-    echo -n "Enter the ticket number: "
-    read ticket_number
-    
+    while true; do
+        echo -n "Enter the ticket number: "
+        read ticket_number
+
+        # Check if the ticket number is a valid 5-digit number
+        if [[ "$ticket_number" =~ ^[0-9]{5}$ ]]; then
+            break
+        else
+            echo "Please enter a valid 5-digit ticket number."
+        fi
+    done
+
     target_file="$TARGET_DIR"/nvidia-bug-report-${ticket_number}.log.gz
 
     # Check if target file exists, if it does, append with a version
@@ -69,7 +78,7 @@ if [[ -f "$latest_file" ]]; then
 
     gunzip "$target_file"
 
-    # Apply -o flag if user specified
+    # Apply -o option if user specified
     if $OPEN_REPORT; then
         open_bug_report $ticket_number
     else
@@ -79,3 +88,4 @@ if [[ -f "$latest_file" ]]; then
 else
     echo "Error: nvidia-bug-report.log.gz not found in $SOURCE_DIR"
 fi
+

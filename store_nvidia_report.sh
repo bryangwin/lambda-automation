@@ -13,7 +13,19 @@ SOURCE_DIR=~/Downloads
 TARGET_DIR=~/nvidia_bug_reports
 
 # Flag to determine if it should open the file with less
-OPEN_WITH_LESS=false
+OPEN_REPORT=false
+
+# Function to open the bug report. This assumes you have check-nvidia-bug-report.sh in your path
+open_bug_report() {
+    if [[ "$1" =~ ^[0-9]{5}$ ]]; then
+        log_file=$(find "$TARGET_DIR" -type f -name "nvidia-bug-report-$1.log")
+        if [ -n "$log_file" ]; then
+            cd "$TARGET_DIR" && check-nvidia-bug-report.sh "$log_file"
+        else echo "No 5 digit ticket number given. Skipping Open Report."
+        fi
+    fi
+}
+
 
 # Parse command line options using getopts
 OPTERR=0
@@ -22,7 +34,7 @@ INVALID_OPT="$1"
 while getopts "o" opt; do
     case $opt in
         o)
-            OPEN_WITH_LESS=true
+            OPEN_REPORT=true
             ;;
         \?)
             echo "Invalid option: $INVALID_OPT use -o if you'd like to open the file" >&2
@@ -58,8 +70,8 @@ if [[ -f "$latest_file" ]]; then
     gunzip "$target_file"
 
     # Apply -o flag if user specified
-    if $OPEN_WITH_LESS; then
-        less "${target_file%.gz}"
+    if $OPEN_REPORT; then
+        open_bug_report $ticket_number
     else
         echo "Success! $(basename "${target_file%.gz}") created in $TARGET_DIR"
     fi

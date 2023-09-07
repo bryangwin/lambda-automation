@@ -17,12 +17,10 @@ OPEN_REPORT=false
 
 # Function to open the bug report. This assumes you have check-nvidia-bug-report.sh in your path
 open_bug_report() {
-    if [[ "$1" =~ ^[0-9]{5}$ ]]; then
-        log_file=$(find "$TARGET_DIR" -type f -name "nvidia-bug-report-$1.log")
-        if [ -n "$log_file" ]; then
-            cd "$TARGET_DIR" && check-nvidia-bug-report.sh "$log_file"
-        else echo "No 5 digit ticket number given. Skipping Open Report."
-        fi
+    log_files=$(find "$TARGET_DIR" -type f -name "nvidia-bug-report-$1*.log" | sort -V)
+    latest_log_file=$(echo "$log_files" | tail -n 1)
+    if [ -n "$latest_log_file" ]; then
+        cd "$TARGET_DIR" && check-nvidia-bug-report.sh "$latest_log_file"
     fi
 }
 

@@ -3,7 +3,7 @@
 # Description: This script will take the nvidia-bug-report.log.gz file from the Downloads directory,
 # take the users input for the support ticket number related to the report, 
 # apend the ticket number to the file name and store it in the nvidia_bug_reports directory
-# You can use -o when you run the script to open the file with less after it's been moved
+# You can use -o when you run the script to open the file with Mark's check-nvidia-bug-report.sh script
 
 # Author: Bryan Gwin
 # Date: 28 Aug 2023
@@ -72,7 +72,7 @@ if [[ -f "$latest_file" ]]; then
 
     gunzip "$target_file"
 
-    # Apply -o option if user specified
+    # Apply -o option if user specified and open with check-nvidia-bug-report.sh
     if $OPEN_REPORT; then
         open_bug_report $ticket_number
     else
